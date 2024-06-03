@@ -36,6 +36,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:id="@+id/BtnSingin"
+                android:backgroundTint="@color/lavender"
                 android:text="Entrar com o google"
                 android:textColor="@color/white"
                 android:textSize="18sp"
