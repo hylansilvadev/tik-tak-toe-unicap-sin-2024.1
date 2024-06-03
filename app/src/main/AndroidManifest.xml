@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailsActivity"
+            android:name=".MainMenuActivity"
             android:exported="false" />
     </application>
 

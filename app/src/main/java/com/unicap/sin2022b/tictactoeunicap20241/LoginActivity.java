@@ -1,6 +1,5 @@
 package com.unicap.sin2022b.tictactoeunicap20241;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -25,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.unicap.sin2022b.tictactoeunicap20241.Service.Users;
 
 import java.util.Objects;
 
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if( task.isSuccessful() ){
                     FirebaseUser user = auth.getCurrentUser();
-                    Users currentUser = new Users();
+                    Users currentUser =  Users.getInstance();
 
                     assert user != null;
                     currentUser.setUserId(user.getProviderId());
@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     database.collection("users").document(user.getUid()).set(currentUser);
 
-                    Intent intent = new Intent(LoginActivity.this, DetailsActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainMenuActivity.class);
                     startActivity(intent);
                 }
                 else {

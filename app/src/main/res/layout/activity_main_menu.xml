@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/pagebkg"
+    tools:context=".LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/lavander_border"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginHorizontal="16dp"
+        >
+
+        <ImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/default_avatar"
+            android:layout_marginRight="16dp"
+            android:clipToOutline="true" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/lavender"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/lavander_border"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginHorizontal="16dp"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Menu"
+            android:textAlignment="center"
+            android:textColor="@color/lavender"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/NewGame"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/lavender"
+            android:text="Nova Partida"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:cornerRadius="20dp" />
+
+        <Button
+            android:id="@+id/FindGame"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/lavender"
+            android:text="Partida Existente"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:cornerRadius="20dp" />
+
+        <Button
+            android:id="@+id/HistoricGames"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/lavender"
+            android:text="Historico de Patidas"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:cornerRadius="20dp" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
