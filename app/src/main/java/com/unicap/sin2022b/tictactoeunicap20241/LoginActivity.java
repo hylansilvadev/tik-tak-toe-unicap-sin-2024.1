@@ -33,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     Button btn_singin;
     FirebaseAuth auth;
     FirebaseFirestore database;
-
     GoogleSignInClient googleSignInClient;
 
 
@@ -97,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
                     Users currentUser =  Users.getInstance();
 
                     assert user != null;
-                    currentUser.setUserId(user.getProviderId());
                     currentUser.setName(user.getDisplayName());
                     currentUser.setProfile(Objects.requireNonNull(user.getPhotoUrl()).toString());
 
