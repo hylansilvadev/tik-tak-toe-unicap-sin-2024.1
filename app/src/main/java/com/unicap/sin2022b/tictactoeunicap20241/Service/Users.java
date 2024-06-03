@@ -1,16 +1,24 @@
-package com.unicap.sin2022b.tictactoeunicap20241;
+package com.unicap.sin2022b.tictactoeunicap20241.Service;
 
 public class Users {
-    String userId, name, profile;
 
+    private static Users instance; // Private static instance variable
 
-    public Users(String userId, String name, String profile) {
+    private String userId;
+    private String name;
+    private String profile;
+
+    private Users(String userId, String name, String profile) {
         this.userId = userId;
         this.name = name;
         this.profile = profile;
     }
 
-    public Users() {
+    public static Users getInstance() {
+        if (instance == null) {
+            instance = new Users("", "", "");
+        }
+        return instance;
     }
 
     public String getUserId() {
