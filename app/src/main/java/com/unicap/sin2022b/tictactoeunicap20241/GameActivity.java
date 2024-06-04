@@ -1,8 +1,10 @@
 package com.unicap.sin2022b.tictactoeunicap20241;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,34 +18,49 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.unicap.sin2022b.tictactoeunicap20241.Service.Users;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = "GameActivity";
+
+    private GameActivity instance;
     private static final int[] BOX_IDS = {
             R.id.image1, R.id.image2, R.id.image3,
             R.id.image4, R.id.image5, R.id.image6,
             R.id.image7, R.id.image8, R.id.image9
     };
 
+    private View playerOneLayout;
+    private View playerTwoLayout;
     private ImageView playerOneImage, playerTwoImage;
     private TextView playerOneName, playerTwoName;
-    private ImageView[] board = new ImageView[9];
-    private String[][] boardState = new String[3][3];
+    private final ImageView[] board = new ImageView[9];
+    private final String[][] boardState = new String[3][3];
 
     private DatabaseReference gameRef;
-    private String gameId;
+    private FirebaseFirestore firestore;
     private boolean playerOneTurn;
+    private boolean gameEnded = false;
     private String playerOneNameStr, playerTwoNameStr, playerOneProfile, playerTwoProfile;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        firestore = FirebaseFirestore.getInstance();
+
         playerOneImage = findViewById(R.id.playerOneImage);
         playerTwoImage = findViewById(R.id.playerTwoImage);
+        playerOneLayout = findViewById(R.id.playerOneLayout);
+        playerTwoLayout = findViewById(R.id.playerTwoLayout);
         playerOneName = findViewById(R.id.playerOneName);
         playerTwoName = findViewById(R.id.playerTwoName);
 
@@ -52,7 +69,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        gameId = intent.getStringExtra("gameId");
+        String gameId = intent.getStringExtra("gameId");
         if (gameId == null) {
             Log.e(TAG, "Game ID is null, finishing activity");
             finish();
@@ -83,6 +100,16 @@ public class GameActivity extends AppCompatActivity {
                     }
 
                     updateUI();
+
+                    Boolean gameEndedSnapshot = dataSnapshot.child("gameEnded").getValue(Boolean.class);
+                    if (gameEndedSnapshot != null && gameEndedSnapshot) {
+                        String winner = dataSnapshot.child("winner").getValue(String.class);
+                        if (winner != null && !gameEnded) {
+                            gameEnded = true;
+                            showLocalResultDialog(winner);
+                        }
+                    }
+
                 } else {
                     Log.e(TAG, "Data snapshot does not exist");
                 }
@@ -116,10 +143,16 @@ public class GameActivity extends AppCompatActivity {
             }
 
             String winner = checkWinner();
-            if (winner != null) {
-                showResultDialog(winner + " wins!");
-            } else if (isBoardFull()) {
-                showResultDialog("It's a draw!");
+            if (winner != null && !gameEnded) {
+                gameEnded = true;
+                gameRef.child("gameEnded").setValue(true);
+                gameRef.child("winner").setValue(winner);
+                showLocalResultDialog(winner + " wins!");
+            } else if (isBoardFull() && !gameEnded) {
+                gameEnded = true;
+                gameRef.child("gameEnded").setValue(true);
+                gameRef.child("winner").setValue("It's a draw!");
+                showLocalResultDialog("It's a draw!");
             }
 
             applyPlayerTurn();
@@ -134,7 +167,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void makeMove(int index) {
-        if (boardState == null) return;
+        if (boardState == null || gameEnded) return;
 
         int row = index / 3;
         int col = index % 3;
@@ -151,11 +184,19 @@ public class GameActivity extends AppCompatActivity {
             gameRef.child("boardState").child(String.valueOf(row)).child(String.valueOf(col)).setValue(boardState[row][col]);
             gameRef.child("playerOneTurn").setValue(playerOneTurn);
 
+            updateBoardCell(index, boardState[row][col]);
+
             String winner = checkWinner();
-            if (winner != null) {
-                showResultDialog(winner + " wins!");
-            } else if (isBoardFull()) {
-                showResultDialog("It's a draw!");
+            if (winner != null && !gameEnded) {
+                gameEnded = true;
+                gameRef.child("gameEnded").setValue(true);
+                gameRef.child("winner").setValue(winner);
+                showLocalResultDialog(winner + " wins!");
+            } else if (isBoardFull() && !gameEnded) {
+                gameEnded = true;
+                gameRef.child("gameEnded").setValue(true);
+                gameRef.child("winner").setValue("It's a draw!");
+                showLocalResultDialog("It's a draw!");
             }
 
             applyPlayerTurn();
@@ -172,18 +213,18 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void showResultDialog(String message) {
+    private void showLocalResultDialog(String message) {
         ResultDialog resultDialog = new ResultDialog(this, message);
         resultDialog.show();
     }
 
     private void applyPlayerTurn() {
         if (playerOneTurn) {
-            playerOneImage.setBackgroundResource(R.drawable.black_border);
-            playerTwoImage.setBackgroundResource(R.drawable.lavander_border);
+            playerOneLayout.setBackgroundResource(R.drawable.black_border);
+            playerTwoLayout.setBackgroundResource(R.drawable.lavander_border);
         } else {
-            playerTwoImage.setBackgroundResource(R.drawable.black_border);
-            playerOneImage.setBackgroundResource(R.drawable.lavander_border);
+            playerTwoLayout.setBackgroundResource(R.drawable.black_border);
+            playerOneLayout.setBackgroundResource(R.drawable.lavander_border);
         }
     }
 
@@ -228,6 +269,21 @@ public class GameActivity extends AppCompatActivity {
 
         gameRef.child("boardState").setValue(boardState);
         gameRef.child("playerOneTurn").setValue(playerOneTurn);
+        gameRef.child("gameEnded").setValue(false);
+        gameRef.child("winner").setValue(null);
+        gameEnded = false; // Reset gameEnded flag
         updateUI();
+    }
+
+    private void saveGameDataToFirestore() {
+        Map<String, Object> gameData = new HashMap<>();
+        gameData.put("playerOneName", playerOneNameStr);
+        gameData.put("playerTwoName", playerTwoNameStr);
+        gameData.put("boardState", Arrays.deepToString(boardState));
+        gameData.put("winner", checkWinner());
+        gameData.put("draw", isBoardFull() && checkWinner() == null);
+
+        firestore.collection("finishedGames").add(gameData)
+                .addOnCompleteListener(task -> gameRef.removeValue());
     }
 }
