@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:id="@+id/statusText"
+    android:background="@drawable/pagebkg"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Room Code to Join"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:textAlignment="center"/>
+        android:layout_margin="30dp"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="20dp">
+    <LinearLayout
 
-    <EditText
-        android:id="@+id/roomCodeInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Room Code" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/joinRoomButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Join Room"
-        android:layout_marginTop="16dp"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Digite o código da sala"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:textAlignment="center"/>
+
+        <EditText
+            android:id="@+id/roomCodeInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Código da Sala" />
+
+        <Button
+            android:id="@+id/joinRoomButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lavender"
+            android:text="Iniciar Jogo"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
