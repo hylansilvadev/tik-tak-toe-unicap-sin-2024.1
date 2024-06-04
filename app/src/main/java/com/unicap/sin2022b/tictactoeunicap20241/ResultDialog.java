@@ -1,21 +1,25 @@
 package com.unicap.sin2022b.tictactoeunicap20241;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.unicap.sin2022b.tictactoeunicap20241.Service.GameManager;
 
 public class ResultDialog extends Dialog {
 
     private final String message;
+    private final GameActivity gameActivity;
     private Button restartButton;
     private TextView resultText;
 
-    public ResultDialog(Context context, String message) {
-        super(context);
+    private GameManager gameManager;
+
+    public ResultDialog(GameActivity gameActivity, String message) {
+        super(gameActivity);
+        this.gameActivity = gameActivity;
         this.message = message;
     }
 
@@ -26,7 +30,9 @@ public class ResultDialog extends Dialog {
 
         initViews();
         setMessage();
-        setButtonListener();
+//        setButtonListener();
+//        gameManager = GameManager.getInstance();
+//        gameManager.saveGameDataToFirestore();
     }
 
     private void initViews() {
@@ -40,11 +46,8 @@ public class ResultDialog extends Dialog {
 
     private void setButtonListener() {
         restartButton.setOnClickListener(v -> {
-            Context context = getContext();
-            if (context instanceof GameActivity) {
-                Intent intent = new Intent(context, MainMenuActivity.class);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(gameActivity, MainMenuActivity.class);
+            gameActivity.startActivity(intent);
             dismiss();
         });
     }
