@@ -23,8 +23,8 @@ public class ResultDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_result);
 
-        resultText = findViewById(R.id.resultText);
-        restartButton = findViewById(R.id.restartButton);
+        resultText = findViewById(R.id.messageTV);
+        restartButton = findViewById(R.id.startNewBtn);
 
         resultText.setText(message);
 
